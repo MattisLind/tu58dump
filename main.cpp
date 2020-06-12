@@ -2,22 +2,29 @@
 #ifdef LINUX
 /*
 
-  Implement wrapper for Arduino environment for
-  Serial and Wifi so we could have the same code in Linux as well as ESP32.
+  Implement wrapper for Arduino environment
 
+  Compile on Linux: c++ main.cpp tu58_driver.cpp Serial.cpp -DLINUX
 
-  Compile on Macos: c++ -DLINUX -DMACOS main.cpp Serial.cpp
-  Compile on Linux: c++ -DLINUX  main.cpp Serial.cpp
 
   Run as sudo to be able to open the serial port.
 
 */
 #include "Serial.h"
+#include <ctype.h>
+#include "arduino.h"
+
+#define isDigit isdigit
+
+
 
 void setup();
 void loop();
 
+
 class Serial Serial ("/dev/ttyUSB0");
+
+class Serial Serial1("/dev/ttyUSB0");
 
 int main (int argc, char ** argv) {
 

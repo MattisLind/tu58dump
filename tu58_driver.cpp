@@ -33,9 +33,12 @@
 //
 // includes
 //
-#include "my_project.h"
+#include "arduino.h"
+#include "my_types.h"
+#include "Serial.h"
 #include "tu58.h"
 #include "tu58_driver.h"
+
 
 
 

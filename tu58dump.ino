@@ -60,7 +60,7 @@
 #define SERIAL_BAUD_RATE  250000L
 #endif
 
-
+#define DEBUG_TU58 1
 
 //
 // includes
@@ -214,7 +214,6 @@ void setup (void)
     tu_initialize(1000000L, &Serial1);
 
     // done
-    tty->printf(F("Initialization complete.\n"));
     return;
 }
 

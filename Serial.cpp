@@ -1,6 +1,8 @@
 #ifdef LINUX
 
 #include "Serial.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 Serial::Serial(const char * devStr) {
   Serial::devStr = devStr;
@@ -105,6 +107,16 @@ int Serial::write(char * str) {
 }
 int Serial::write(unsigned char * buf, int len) {
   return ::write(fd, buf, len);
+}
+
+int Serial::printf(const char * fmt, ...) {
+  va_list arg;
+  char buffer [2048];
+  int done;
+  va_start (arg, fmt);
+  done = vsprintf (buffer, fmt, arg);
+  va_end (arg);
+  return ::write(fd,buffer,strlen(buffer));
 }
 
 #endif

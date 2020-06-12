@@ -46,6 +46,11 @@ class Serial {
   int write(char *);
   int write(unsigned char *, int);
   void begin (int speed = 9600, int config = SERIAL_8N1);
+  int printf(const char *,...);
+  int availableForWrite();
+  void flush();
 };
+
+typedef class Serial HardwareSerial;
 
 #endif
