@@ -46,10 +46,10 @@ speed_t Serial::translateSpeed(int speed) {
 void Serial::begin(int speed, int config) {
 
   speed_t speedSetting = translateSpeed(speed);
-  
 	      
   struct termios options;
 
+  //printf ("BEGIN FD=%d SPEED=%d CONFIG=%d\r\n",fd, speed,config);
   /* open the port */
   fd = open(devStr, O_RDWR | O_NOCTTY | O_NDELAY);
   fcntl(fd, F_SETFL, 0);
@@ -84,15 +84,17 @@ void Serial::begin(int speed, int config) {
 int Serial::available () {
   int ret;
   struct pollfd pollfd;
+  //printf ("AVAILABLE FD=%d\r\n",fd);
   pollfd.fd = fd;
   pollfd.events = POLLIN;
-  ret = poll(&pollfd, 1 , 10);
+  ret = poll(&pollfd, 1 , 1000);
   return ret; 
 }
 
 //extern "C" ssize_t read (int, void *, size_t);
 
 int Serial::read () {
+  //printf ("READ FD=%d\n\r", fd);
   char ch;
   if (::read (fd, &ch, 1) != 1) {
     return -1;
@@ -100,12 +102,15 @@ int Serial::read () {
   return (int) ch;
 }
 int Serial::write(char ch) {
+  //printf("WRITE CHAR FD=%d\r\n",fd);
   return ::write(fd, &ch, 1);
 }
 int Serial::write(char * str) {
+  //printf("WRITE STRING FD=%d\r\n", fd);
   return ::write(fd, str, strlen(str));
 }
 int Serial::write(unsigned char * buf, int len) {
+  //printf("WRITE BUFFER FD=%d\r\n",fd);
   return ::write(fd, buf, len);
 }
 
@@ -124,6 +129,7 @@ int Serial::availableForWrite() {
 }
 
 void Serial::flush() {
+  //printf ("FLUSH FD=%d\r\n", fd);
   tcflush(fd,TCIOFLUSH);  
 }
 

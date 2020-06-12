@@ -213,7 +213,7 @@ void tu_initialize (uint32_t serialBaud, HardwareSerial *serialPort)
 
     // check size of serial buffers is correct
     if ((size = tu58Port->availableForWrite()) < 250) {
-        if (debugLevel) debugPort->printf(F("TU58: Warning, tu58 serial buffer is too small at %d.; should be at least %d. bytes\n"), size, 250);
+        if (debugLevel) debugPort->printf(F("TU58: Warning, tu58 serial buffer is too small at %d.; should be at least %d. bytes\r\n"), size, 250);
     }
 
     // and done
@@ -258,18 +258,18 @@ int8_t tu_init (void)
 	      if (TRUE) {
 
 	          // send two INIT commands
-	          if (debugLevel) debugPort->printf(F("TU58: tu_init sending <INIT><INIT>\n"));
+	          if (debugLevel) debugPort->printf(F("TU58: tu_init sending <INIT><INIT>\r\n"));
 	          tu_sndbuf(init_init, sizeof(init_init));
-	          if (debugLevel) debugPort->printf(F("TU58: tu_init <INIT><INIT> sent!\n"));
+	          if (debugLevel) debugPort->printf(F("TU58: tu_init <INIT><INIT> sent!\r\n"));
 	          tu_flush();
 
 	          // wait for a CONT or INIT response w/retry
 	          for (count = 250; --count; ) {
 		            c = tu_rcvchr();
-		            if (debugLevel) debugPort->printf(F("TU58: tu_init received 0x%02X\n"), c);
+		            if (debugLevel) debugPort->printf(F("TU58: tu_init received 0x%02X\r\n"), c);
 		            if (c == TUF_CONT) {
 		                // successful
-		                if (debugLevel) debugPort->printf(F("TU58: tu_init SUCCESS\n"));
+		                if (debugLevel) debugPort->printf(F("TU58: tu_init SUCCESS\r\n"));
 		                return TUE_SUCC;
 		            } else if (c == TUF_INIT) {
 		                // back to outer loop
@@ -301,7 +301,7 @@ int8_t tu_diag (void)
     packet.length = TU_CTRL_LEN;
     packet.opcode = TUO_DIAGNOSE;
     sts = tu_sndcmd(&packet);
-    if (debugLevel) debugPort->printf(F("TU58: tu_diag status=%d\n"), sts);
+    if (debugLevel) debugPort->printf(F("TU58: tu_diag status=%d\r\n"), sts);
     if (sts) return sts;
 
     // now wait for an end packet response
@@ -324,7 +324,7 @@ int8_t tu_nop (void)
     packet.length = TU_CTRL_LEN;
     packet.opcode = TUO_NOP;
     sts = tu_sndcmd(&packet);
-    if (debugLevel) debugPort->printf(F("TU58: tu_nop status=%d\n"), sts);
+    if (debugLevel) debugPort->printf(F("TU58: tu_nop status=%d\r\n"), sts);
     if (sts) return sts;
 
     // now wait for an end packet response
@@ -350,7 +350,7 @@ int8_t tu_seek (uint8_t unit, uint16_t blknum)
     packet.unit = unit;
     packet.block = blknum;
     sts = tu_sndcmd(&packet);
-    if (debugLevel) debugPort->printf(F("TU58: tu_seek unit=%d block=%u status=%d\n"), unit, blknum, sts);
+    if (debugLevel) debugPort->printf(F("TU58: tu_seek unit=%d block=%u status=%d\r\n"), unit, blknum, sts);
     if (sts) return sts;
 
     // now wait for an end packet response
@@ -381,7 +381,7 @@ int8_t tu_read (uint8_t unit, uint16_t blknum, uint16_t count, uint8_t *buffer)
     packet.count = count;
     packet.block = blknum;
     sts = tu_sndcmd(&packet);
-    if (debugLevel) debugPort->printf(F("TU58: tu_read unit=%d block=%u count=%u status=%d\n"), unit, blknum, count, sts);
+    if (debugLevel) debugPort->printf(F("TU58: tu_read unit=%d block=%u count=%u status=%d\r\n"), unit, blknum, count, sts);
     if (sts) return sts;
 
     // process data packets as they are received
@@ -389,7 +389,7 @@ int8_t tu_read (uint8_t unit, uint16_t blknum, uint16_t count, uint8_t *buffer)
 	      if ((dat = tu_rcvchr()) == TUF_DATA) {
 	          // next byte is length of the data
 	          cnt = tu_rcvchr();
-	          if (debugLevel) debugPort->printf(F("TU58: tu_read bytes=%u\n"), cnt);
+	          if (debugLevel) debugPort->printf(F("TU58: tu_read bytes=%u\r\n"), cnt);
 	          // form the initial checksum
 	          chksum.l = word(cnt, TUF_DATA);
 	          // read the remaining bytes in the data packet
@@ -449,7 +449,7 @@ int8_t tu_write (uint8_t unit, uint16_t blknum, uint16_t count, uint8_t *buffer)
     packet.count = count;
     packet.block = blknum;
     sts = tu_sndcmd(&packet);
-    if (debugLevel) debugPort->printf(F("TU58: tu_write unit=%d block=%u count=%u status=%d\n"), unit, blknum, count, sts);
+    if (debugLevel) debugPort->printf(F("TU58: tu_write unit=%d block=%u count=%u status=%d\r\n"), unit, blknum, count, sts);
     if (sts) return sts;
 
     // send data packets
@@ -457,7 +457,7 @@ int8_t tu_write (uint8_t unit, uint16_t blknum, uint16_t count, uint8_t *buffer)
 	      // compute remaining number of bytes to send
 	      cnt = count > TU_DATA_LEN ? TU_DATA_LEN : count;
 	      count -= cnt;
-	      if (debugLevel) debugPort->printf(F("TU58: tu_write bytes=%u\n"), cnt);
+	      if (debugLevel) debugPort->printf(F("TU58: tu_write bytes=%u\r\n"), cnt);
 	      if (cnt == 0) return TUE_PARO;
 	      // setup buffer
 	      ptr = tu_buffer;

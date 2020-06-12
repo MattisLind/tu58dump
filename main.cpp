@@ -14,7 +14,7 @@
 #include <ctype.h>
 #include "arduino.h"
 #include <sys/time.h>
-
+#include <stdlib.h>
 #define isDigit isdigit
 
 unsigned long millis() {
@@ -36,7 +36,7 @@ void setup();
 void loop();
 
 
-class Serial Serial ("/dev/ttyUSB0");
+class Serial Serial ("/dev/tty");
 
 class Serial Serial1("/dev/ttyUSB0");
 

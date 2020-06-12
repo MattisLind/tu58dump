@@ -89,7 +89,6 @@ uint16_t value;
 //
 uint8_t tmp_buffer[128];
 
-
 //
 // process user input
 //
@@ -97,19 +96,19 @@ void run_user (char c)
 {
     static char cmd[40];
     static uint8_t i = 0;
-
+    if (c >= 0x60) c -= 0x20;
     if (isDigit(c))    { value = 10*value + (c - '0'); }
-    else if (c == 'B') { tty->printf("BLOCK %u\n", value);  block = value;  value = 0; }
-    else if (c == 'N') { tty->printf("NUMBER %u\n", value); number = value; value = 0; }
-    else if (c == 'I') { tty->printf("INIT\n");  c_init = 1; }
-    else if (c == 'R') { tty->printf("READ\n");  c_read = 1; }
-    else if (c == 'W') { tty->printf("WRITE\n"); c_write = 1; }
-    else if (c == 'C') { tty->printf("COPY\n");  c_read = c_write = 1; }
-    else if (c == 'D') { tty->printf("DIAG\n");  c_diag = 1; }
-    else if (c == 'P') { tty->printf("NOP\n");   c_nop = 1; }
-    else if (c == 'S') { tty->printf("SEEK\n");  c_seek = 1; }
-    else if (c == 'H') { tty->printf("HALT\n");  c_read = c_write = 0; }
-
+    else if (c == 'B') { tty->printf("BLOCK %u\r\n", value);  block = value;  value = 0; }
+    else if (c == 'N') { tty->printf("NUMBER %u\r\n", value); number = value; value = 0; }
+    else if (c == 'I') { tty->printf("INIT\r\n");  c_init = 1; }
+    else if (c == 'R') { tty->printf("READ\r\n");  c_read = 1; }
+    else if (c == 'W') { tty->printf("WRITE\r\n"); c_write = 1; }
+    else if (c == 'C') { tty->printf("COPY\r\n");  c_read = c_write = 1; }
+    else if (c == 'D') { tty->printf("DIAG\r\n");  c_diag = 1; }
+    else if (c == 'P') { tty->printf("NOP\r\n");   c_nop = 1; }
+    else if (c == 'S') { tty->printf("SEEK\r\n");  c_seek = 1; }
+    else if (c == 'H') { tty->printf("HALT\r\n");  c_read = c_write = 0; }
+    else if (c == 'X') { exit(0); }
     return;
 }
 
@@ -126,33 +125,33 @@ void run_tu58 (void)
 
         if (c_init) {
             sts = tu_init();
-            if (DEBUG_TU58) tty->printf("init: status=%d\n", sts);
+            if (DEBUG_TU58) tty->printf("init: status=%d\r\n", sts);
         }
 
         if (c_diag) {
             sts = tu_diag();
-            if (DEBUG_TU58) tty->printf("diag: status=%d\n", sts);
+            if (DEBUG_TU58) tty->printf("diag: status=%d\r\n", sts);
         }
 
         if (c_nop) {
             sts = tu_nop();
-            if (DEBUG_TU58) tty->printf("nop: status=%d\n", sts);
+            if (DEBUG_TU58) tty->printf("nop: status=%d\r\n", sts);
         }
 
         if (c_seek) {
             sts = tu_seek(0, block);
-            if (DEBUG_TU58) tty->printf("seek:  unit=%d block=0x%04X status=%d\n", 0, block, sts);
+            if (DEBUG_TU58) tty->printf("seek:  unit=%d block=0x%04X status=%d\r\n", 0, block, sts);
         }
 
         if (c_read) {
             sts = tu_read(0, block, sizeof(tmp_buffer), tmp_buffer);
             if (DEBUG_TU58) {
                 uint16_t i;
-                tty->printf("read:  unit=%d block=0x%04X count=0x%04X status=%d\n", 0, block, sizeof(tmp_buffer), sts);
+                tty->printf("read:  unit=%d block=0x%04X count=0x%04X status=%d\r\n", 0, block, sizeof(tmp_buffer), sts);
                 for (i = 0; i < sizeof(tmp_buffer); ++i) {
                     if (i % 32 == 0) tty->printf("  ");
                     tty->printf(" %02X", tmp_buffer[i]);
-                    if (i % 32 == 31) tty->printf("\n");
+                    if (i % 32 == 31) tty->printf("\r\n");
                 }
             }
         }
@@ -161,11 +160,11 @@ void run_tu58 (void)
             sts = tu_write(1, block, sizeof(tmp_buffer), tmp_buffer);
             if (DEBUG_TU58) {
                 uint16_t i;
-                tty->printf("write: unit=%d block=0x%04X count=0x%04X status=%d\n", 1, block, sizeof(tmp_buffer), sts);
+                tty->printf("write: unit=%d block=0x%04X count=0x%04X status=%d\r\n", 1, block, sizeof(tmp_buffer), sts);
                 for (i = 0; i < sizeof(tmp_buffer); ++i) {
                     if (i % 32 == 0) tty->printf("  ");
                     tty->printf(" %02X", tmp_buffer[i]);
-                    if (i % 32 == 31) tty->printf("\n");
+                    if (i % 32 == 31) tty->printf("\r\n");
                 }
             }
         }
@@ -208,10 +207,9 @@ void setup (void)
     c_diag = 0;
     c_init = 0;
     c_nop = 0;
-
     // init tu58 interface
     if (DEBUG_TU58) tu_debug(tty, DEBUG_TU58);
-    tu_initialize(1000000L, &Serial1);
+    tu_initialize(38400L, &Serial1);
 
     // done
     return;
