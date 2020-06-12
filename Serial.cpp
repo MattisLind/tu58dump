@@ -119,4 +119,12 @@ int Serial::printf(const char * fmt, ...) {
   return ::write(fd,buffer,strlen(buffer));
 }
 
+int Serial::availableForWrite() {
+  return 32768;
+}
+
+void Serial::flush() {
+  tcflush(fd,TCIOFLUSH);  
+}
+
 #endif
