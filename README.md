@@ -3,7 +3,7 @@ Tool to dump TU58 tapes.
 
 ![TU58 drive](https://i.imgur.com/74cPEih.png)
 
-A TU58 is a tape drive manufactured by DEC that takes DC100 style tapes and provide a simple but slow random access media. The tape has 512 blocks, 512 bytes each. The tapes comes preformatted and cannot be formatted in the field.
+A TU58 is a tape drive manufactured by DEC that takes DC100 style tapes and provide a simple but slow random access media. The tape has 2048 blocks, 128 bytes each. The tapes comes preformatted and cannot be formatted in the field. The small size of a block is because the Intel 8156 chip in the controller only has 256 bytes of RAM. 
 
 ![TU 58 tapes](https://i.imgur.com/q8ZxF0T.jpg)
 
